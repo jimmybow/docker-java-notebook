@@ -29,6 +29,5 @@ RUN pip install jupyter_contrib-nbextensions RISE \
   && jupyter nbextension enable hide_input/main
   
 # Set user back to priviledged user.
-RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
 USER $NB_USER
 WORKDIR /home/$NB_USER
