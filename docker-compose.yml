@@ -7,7 +7,7 @@ services:
     ports:
       - 8888:8888
     volumes:
-      - ./data:/home/jovyan
+      - ./data:/home/jovyan/work
     environment:
       - TZ=Asia/Taipei
       - DOCKER_STACKS_JUPYTER_CMD=notebook

@@ -1,4 +1,4 @@
-FROM jupyter/base-notebook:notebook-5.7.8
+FROM jupyter/minimal-notebook:notebook-6.5.4
 
 MAINTAINER Jimmy jimmywu@bluetechnology.com.tw
 
@@ -29,6 +29,6 @@ RUN pip install jupyter_contrib-nbextensions RISE \
   && jupyter nbextension enable hide_input/main
   
 # Set user back to priviledged user.
-RUN chown -R $NB_USER /home/$NB_USER/.ipython
+RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
 USER $NB_USER
 WORKDIR /home/$NB_USER
