@@ -1,0 +1,17 @@
+version: '3'
+services:
+  java-notebook:
+    build: ./build
+    image: java-notebook:java11
+    container_name: java-notebook
+    ports:
+      - 8888:8888
+    volumes:
+      - ./data:/home/jovyan
+    environment:
+      - TZ=Asia/Taipei
+      - DOCKER_STACKS_JUPYTER_CMD=notebook
+    restart: unless-stopped
+networks:
+  default:
+    name: bridge-network
