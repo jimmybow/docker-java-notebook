@@ -32,4 +32,3 @@ RUN pip install jupyter_contrib-nbextensions RISE \
 RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
 USER $NB_USER
 WORKDIR /home/$NB_USER
-COPY jupyter_notebook_config.py .jupyter/jupyter_notebook_config.py
