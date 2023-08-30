@@ -7,10 +7,7 @@ WORKDIR /opt
 
 # Install dependencies
 RUN apt-get update; \
-apt-get install curl wget zip unzip vim software-properties-common -y; \
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9; \
-apt-add-repository 'deb http://repos.azulsystems.com/ubuntu stable main'; \
-apt install -y zulu-11; \
+apt-get install curl wget zip unzip vim software-properties-common openjdk-11-jdk -y; \
 apt-get clean; \
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*;
 
@@ -29,5 +26,6 @@ RUN pip install jupyter_contrib-nbextensions RISE \
   && jupyter nbextension enable hide_input/main
   
 # Set user back to priviledged user.
+RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
 USER $NB_USER
 WORKDIR /home/$NB_USER

@@ -12,7 +12,6 @@ services:
     environment:
       - TZ=Asia/Taipei
       - DOCKER_STACKS_JUPYTER_CMD=notebook
-      - CHOWN_EXTRA=/home/jovyan/.ipython
     restart: unless-stopped
 networks:
   default:
