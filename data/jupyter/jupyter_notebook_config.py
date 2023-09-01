@@ -447,7 +447,7 @@ c = get_config()  #noqa
 
 ## The directory to use for notebooks and kernels.
 #  Default: ''
-# c.NotebookApp.notebook_dir = ''
+c.NotebookApp.notebook_dir = '/home/jovyan/work'
 
 ## Whether to open in a browser after starting.
 #                          The specific browser used is platform dependent and
