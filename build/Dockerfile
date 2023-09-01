@@ -1,4 +1,4 @@
-FROM jupyter/minimal-notebook:notebook-6.5.4
+FROM jupyter/base-notebook:notebook-5.7.8
 
 MAINTAINER Jimmy jimmywu@bluetechnology.com.tw
 
@@ -18,18 +18,24 @@ RUN unzip ijava-kernel.zip -d ijava-kernel; \
   cd ijava-kernel; \
   python3 install.py --sys-prefix;
 
-# Install jupyter RISE extension.
-RUN pip install jupyter_contrib-nbextensions RISE \
-  && jupyter-nbextension install rise --py --system \
-  && jupyter-nbextension enable rise --py --system \
+## install basic python packages
+RUN pip install --upgrade pip 
+RUN pip install numpy pandas
+RUN pip install argon2-cffi==20.1.0 
+RUN pip install markupsafe==2.0.1
+RUN pip install jupyterlab==2.2.2
+  
+## Install jupyter RISE extension.
+RUN pip install terminado --ignore-installed
+RUN pip install jupyter-nbextensions-configurator==0.4.1
+RUN pip install jupyter_contrib-nbextensions==0.5.1 \
   && jupyter contrib nbextension install --system \
   && jupyter nbextension enable hide_input/main
 
-# install basic python packages
-RUN pip install numpy pandas
-
-# install beakerx func
-RUN pip install beakerx beakerx_kernel_autotranslation beakerx_tabledisplay
+## install beakerx func
+RUN pip install beakerx beakerx_kernel_autotranslation beakerx_tabledisplay; \
+  beakerx_kernel_autotranslation install; \
+  beakerx_tabledisplay install;
 
 # install groovy
 RUN pip install beakerx_kernel_groovy; \
