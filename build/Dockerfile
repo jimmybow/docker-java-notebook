@@ -25,7 +25,7 @@ RUN pip install argon2-cffi==20.1.0
 RUN pip install markupsafe==2.0.1
 RUN pip install jupyterlab==2.2.2
   
-## Install jupyter RISE extension.
+## Install jupyter extension.
 RUN pip install terminado --ignore-installed
 RUN pip install jupyter-nbextensions-configurator==0.4.1
 RUN pip install jupyter_contrib-nbextensions==0.5.1 \
