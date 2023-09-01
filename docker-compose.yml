@@ -4,6 +4,7 @@ services:
     build: ./build
     image: java-notebook:java11
     container_name: java-notebook
+    user: root
     ports:
       - 8888:8888
     volumes:

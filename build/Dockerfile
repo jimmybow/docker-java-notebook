@@ -24,8 +24,23 @@ RUN pip install jupyter_contrib-nbextensions RISE \
   && jupyter-nbextension enable rise --py --system \
   && jupyter contrib nbextension install --system \
   && jupyter nbextension enable hide_input/main
+
+# install basic python packages
+RUN pip install numpy pandas
+
+# install beakerx func
+RUN pip install beakerx beakerx_kernel_autotranslation beakerx_tabledisplay
+
+# install groovy
+RUN pip install beakerx_kernel_groovy; \
+    beakerx_kernel_groovy install;
+
+# install scala
+RUN pip install beakerx_kernel_scala; \
+    beakerx_kernel_scala install;
   
 # Set user back to priviledged user.
 RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
+RUN mkdir -p /home/$NB_USER/.local && chown -R $NB_USER /home/$NB_USER/.local
 USER $NB_USER
 WORKDIR /home/$NB_USER
