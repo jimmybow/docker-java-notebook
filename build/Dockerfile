@@ -7,7 +7,7 @@ WORKDIR /opt
 
 # Install dependencies
 RUN apt-get update; \
-apt-get install curl wget zip unzip vim software-properties-common openjdk-11-jdk -y; \
+apt-get install curl wget zip unzip vim software-properties-common openjdk-11-jdk maven -y; \
 apt-get clean; \
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*;
 
@@ -30,12 +30,18 @@ RUN pip install terminado --ignore-installed
 RUN pip install jupyter-nbextensions-configurator==0.4.1
 RUN pip install jupyter_contrib-nbextensions==0.5.1 \
   && jupyter contrib nbextension install --system \
+  && jupyter nbextension install --sys-prefix --py jupyter_nbextensions_configurator --overwrite \
+  && jupyter nbextension enable --sys-prefix --py jupyter_nbextensions_configurator \
   && jupyter nbextension enable hide_input/main
 
 ## install beakerx func
-RUN pip install beakerx beakerx_kernel_autotranslation beakerx_tabledisplay; \
-  beakerx_kernel_autotranslation install; \
+RUN pip install beakerx==2.0.0 beakerx_base==2.0.0 beakerx_tabledisplay==2.0.0; \
+  beakerx install; \
   beakerx_tabledisplay install;
+  
+# Install JupyterLab extensions for BeakerX
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager \
+  && jupyter labextension install beakerx-jupyterlab   
 
 # install groovy
 RUN pip install beakerx_kernel_groovy; \
@@ -44,6 +50,10 @@ RUN pip install beakerx_kernel_groovy; \
 # install scala
 RUN pip install beakerx_kernel_scala; \
     beakerx_kernel_scala install;
+    
+# install kotlin
+RUN pip install beakerx_kernel_kotlin; \
+    beakerx_kernel_kotlin install;
   
 # Set user back to priviledged user.
 RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
