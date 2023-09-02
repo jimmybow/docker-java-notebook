@@ -23,10 +23,11 @@ RUN pip install --upgrade pip
 RUN pip install numpy pandas
 RUN pip install argon2-cffi==20.1.0 
 RUN pip install markupsafe==2.0.1
-RUN pip install jupyterlab==2.2.2
+RUN pip install terminado --ignore-installed
+RUN pip install jupyterlab==3.6.5
+RUN pip install ipywidgets==7.6.0
   
 ## Install jupyter extension.
-RUN pip install terminado --ignore-installed
 RUN pip install jupyter-nbextensions-configurator==0.4.1
 RUN pip install jupyter_contrib-nbextensions==0.5.1 \
   && jupyter contrib nbextension install --system \
@@ -35,13 +36,9 @@ RUN pip install jupyter_contrib-nbextensions==0.5.1 \
   && jupyter nbextension enable hide_input/main
 
 ## install beakerx func
-RUN pip install beakerx==2.0.0 beakerx_base==2.0.0 beakerx_tabledisplay==2.0.0; \
+RUN pip install beakerx==2.0.0 beakerx_tabledisplay==2.0.0; \
   beakerx install; \
   beakerx_tabledisplay install;
-  
-# Install JupyterLab extensions for BeakerX
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager \
-  && jupyter labextension install beakerx-jupyterlab   
 
 # install groovy
 RUN pip install beakerx_kernel_groovy; \
