@@ -52,7 +52,15 @@ RUN pip install beakerx_kernel_scala; \
 # install kotlin
 RUN pip install beakerx_kernel_kotlin; \
     beakerx_kernel_kotlin install;
-  
+
+# install clojure
+RUN pip install beakerx_kernel_clojure; \
+    beakerx_kernel_clojure install;
+
+# install sql
+RUN pip install beakerx_kernel_sql; \
+    beakerx_kernel_sql install;
+
 # Set user back to priviledged user.
 RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
 RUN mkdir -p /home/$NB_USER/.local && chown -R $NB_USER /home/$NB_USER/.local
