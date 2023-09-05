@@ -36,9 +36,10 @@ RUN pip install jupyter_contrib-nbextensions==0.5.1 \
   && jupyter nbextension enable hide_input/main
 
 ## install beakerx func
-RUN pip install beakerx==2.0.0 beakerx_tabledisplay==2.0.0; \
+RUN pip install beakerx==2.0.0 beakerx_tabledisplay==2.0.0 beakerx_kernel_autotranslation==2.0.0; \
   beakerx install; \
-  beakerx_tabledisplay install;
+  beakerx_tabledisplay install; \
+  beakerx_kernel_autotranslation install;
 
 # install groovy
 RUN pip install beakerx_kernel_groovy; \
