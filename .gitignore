@@ -2,4 +2,5 @@ data/work/*
 data/jupyter/*
 !data/work/doc
 !data/jupyter/jupyter_notebook_config.py
+!data/jupyter/custom
 .ipynb_checkpoints
