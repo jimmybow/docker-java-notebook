@@ -32,8 +32,7 @@ RUN pip install jupyter-nbextensions-configurator==0.4.1
 RUN pip install jupyter_contrib-nbextensions==0.5.1 \
   && jupyter contrib nbextension install --system \
   && jupyter nbextension install --sys-prefix --py jupyter_nbextensions_configurator --overwrite \
-  && jupyter nbextension enable --sys-prefix --py jupyter_nbextensions_configurator \
-  && jupyter nbextension enable hide_input/main
+  && jupyter nbextension enable --sys-prefix --py jupyter_nbextensions_configurator
 
 ## install beakerx func
 RUN pip install beakerx==2.0.0 beakerx_tabledisplay==2.0.0 beakerx_kernel_autotranslation==2.0.0; \
@@ -60,6 +59,10 @@ RUN pip install beakerx_kernel_clojure; \
 # install sql
 RUN pip install beakerx_kernel_sql; \
     beakerx_kernel_sql install;
+
+# enable jupyter
+RUN jupyter nbextension enable hide_input/main --sys-prefix; \
+    jupyter nbextension enable hinterland/hinterland --sys-prefix;
 
 # Set user back to priviledged user.
 RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
