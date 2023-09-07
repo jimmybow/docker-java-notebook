@@ -1,0 +1,25 @@
+String[] mavenDependencies = {
+    "net.sourceforge.plantuml:plantuml:8059"
+};
+getKernelInstance().getMavenResolver().addMavenDependencies(Arrays.asList(mavenDependencies));
+
+import io.github.spencerpark.jupyter.kernel.magic.registry.LineMagic;
+import io.github.spencerpark.jupyter.kernel.magic.registry.CellMagic;
+import net.sourceforge.plantuml.SourceStringReader;
+import net.sourceforge.plantuml.FileFormatOption;
+import net.sourceforge.plantuml.FileFormat;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
+
+class CustomMagics {
+    @CellMagic
+    public void plantuml (List<String> args, String body) throws Exception {        
+        SourceStringReader reader = new SourceStringReader(body);
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        String desc = reader.generateImage(outputStream, new FileFormatOption(FileFormat.SVG));
+        outputStream.close();
+        final String svg = new String(outputStream.toByteArray(), Charset.forName("UTF-8"));
+        display(svg, "text/html");
+    }
+}
+getKernelInstance().getMagics().registerMagics(new CustomMagics());

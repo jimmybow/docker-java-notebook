@@ -13,6 +13,7 @@ services:
     environment:
       - TZ=Asia/Taipei
       - DOCKER_STACKS_JUPYTER_CMD=notebook
+      - IJAVA_STARTUP_SCRIPTS_PATH=/home/jovyan/.jupyter/custom_IJava/custom.jshell
     restart: unless-stopped
 networks:
   default:
