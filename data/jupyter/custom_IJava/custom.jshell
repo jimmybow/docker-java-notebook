@@ -12,7 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 
 class CustomMagics {
-    @CellMagic
+    @CellMagic(aliases = { "uml" })
     public void plantuml (List<String> args, String body) throws Exception {        
         SourceStringReader reader = new SourceStringReader(body);
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -20,6 +20,38 @@ class CustomMagics {
         outputStream.close();
         final String svg = new String(outputStream.toByteArray(), Charset.forName("UTF-8"));
         display(svg, "text/html");
+    }
+
+    @LineMagic
+    public void html (List<String> args) throws Exception {  
+        args.forEach(arg -> display(arg, "text/html"));
+    }
+
+    @CellMagic
+    public void html (List<String> args, String body) throws Exception {        
+        display(body, "text/html");
+    }  
+    
+    @LineMagic
+    public void javascript (List<String> args) throws Exception {  
+        args.forEach(arg -> display(arg, "application/javascript"));
+    }
+    
+    @CellMagic
+    public void javascript (List<String> args, String body) throws Exception {        
+        display(body, "application/javascript");
+    }
+    
+    @LineMagic(aliases = { "system", "bash" })
+    public void exec(List<String> args) throws Exception {  
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.command(args);
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+        Scanner scanner = new Scanner(process.getInputStream(), Charset.forName("UTF-8"));
+        while (scanner.hasNext()) {
+            System.out.println(scanner.nextLine());
+        }
     }
 }
 getKernelInstance().getMagics().registerMagics(new CustomMagics());
