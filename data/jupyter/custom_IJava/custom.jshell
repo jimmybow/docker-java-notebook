@@ -32,15 +32,26 @@ class CustomMagics {
         display(body, "text/html");
     }  
     
-    @LineMagic
+    @LineMagic(aliases = { "js" })
     public void javascript (List<String> args) throws Exception {  
-        args.forEach(arg -> display(arg, "application/javascript"));
+        args.forEach(arg -> display("<script>"+arg+"</script>", "text/html"));
     }
     
-    @CellMagic
-    public void javascript (List<String> args, String body) throws Exception {        
-        display(body, "application/javascript");
+    @CellMagic(aliases = { "js" })
+    public void javascript (List<String> args, String body) throws Exception {    
+        String type = args.isEmpty() ? "" : "type="+args.get(0);
+        display("<script " + type + ">" + body + "</script>", "text/html");
     }
+    
+    @LineMagic
+    public void css (List<String> args) throws Exception {  
+        args.forEach(arg -> display("<style>"+arg+"</style>", "text/html"));
+    }
+
+    @CellMagic
+    public void css (List<String> args, String body) throws Exception {        
+        display("<style>"+body+"</style>", "text/html");
+    }      
     
     @LineMagic(aliases = { "system", "bash" })
     public void exec(List<String> args) throws Exception {  
