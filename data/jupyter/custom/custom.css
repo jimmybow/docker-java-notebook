@@ -1,3 +1,7 @@
-div.output_area pre {
+.output_area pre {
     white-space: pre;
+}
+
+.output_subarea {
+    background-color: linen;
 }
