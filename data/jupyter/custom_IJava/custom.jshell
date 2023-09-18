@@ -57,12 +57,14 @@ class CustomMagics {
 
         if (errorOutput.toString().isEmpty()) {
             System.out.println(standardOutput);
-            List<String> classpath = Arrays.asList(standardOutput.toString().split("\n"));
-            getKernelInstance().getMavenResolver().addJarsToClasspath(
-                classpath.stream()
-                     .filter(x -> x.startsWith("RuntimeClasspath: ")) 
-                     .map(x -> x.replace("RuntimeClasspath: ", ""))::iterator
-            );    
+            if (gradle_task.equals("RuntimeClasspath")) {
+                List<String> classpath = Arrays.asList(standardOutput.toString().split("\n"));
+                getKernelInstance().getMavenResolver().addJarsToClasspath(
+                    classpath.stream()
+                         .filter(x -> x.startsWith("RuntimeClasspath: ")) 
+                         .map(x -> x.replace("RuntimeClasspath: ", ""))::iterator
+                );            
+            }  
         } else {
             System.out.println("Error Output:\n" + errorOutput.toString());
         }
