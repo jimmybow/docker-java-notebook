@@ -1,17 +1,73 @@
+String[] mavenRepo = {
+    "repo.gradle.org", "https://repo.gradle.org/gradle/libs-releases"
+};
 String[] mavenDependencies = {
+    "org.gradle:gradle-tooling-api:7.4.2",
     "net.sourceforge.plantuml:plantuml:8059"
 };
+getKernelInstance().getMavenResolver().addMavenRepo(Arrays.asList(mavenRepo));
 getKernelInstance().getMavenResolver().addMavenDependencies(Arrays.asList(mavenDependencies));
 
 import io.github.spencerpark.jupyter.kernel.magic.registry.LineMagic;
 import io.github.spencerpark.jupyter.kernel.magic.registry.CellMagic;
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.BuildLauncher;
+import org.gradle.tooling.GradleConnector;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import net.sourceforge.plantuml.SourceStringReader;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.FileFormat;
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
 
 class CustomMagics {
+    @CellMagic
+    public void gradle(List<String> args, String body) throws Exception {
+        String gradle_task = args.isEmpty() ? "RuntimeClasspath" : args.get(0);
+        String randomDirectoryPath = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
+        String[] params= {randomDirectoryPath + File.separator + "build.gradle", gradle_task};
+        File buildFile = new File(params[0]);
+        buildFile.getParentFile().mkdirs();
+        Files.write(buildFile.toPath(), body.getBytes(Charset.forName("utf-8")));
+        gradle(Arrays.asList(params));
+    }
+
+    @LineMagic
+    public void gradle(List<String> args) throws Exception { 
+        if (args.isEmpty()) {
+            throw new IllegalArgumentException("Loading from gradle requires at least the path to the gradle.build file");
+        }
+        
+        File buildFile = new File(args.get(0));
+        String gradle_task = args.size()>1 ? args.get(1) : "RuntimeClasspath";
+
+        ProjectConnection connection = GradleConnector.newConnector()
+                .forProjectDirectory(buildFile.getParentFile())
+                .connect();
+        String[] gradleTasks = new String[]{ gradle_task };
+        BuildLauncher build = connection.newBuild();
+        ByteArrayOutputStream standardOutput = new ByteArrayOutputStream();
+        ByteArrayOutputStream errorOutput = new ByteArrayOutputStream();	        
+
+        build.forTasks(gradleTasks)
+            .setStandardOutput(standardOutput)
+            .setStandardError(errorOutput)        
+            .setColorOutput(true)
+            .run();
+
+        if (errorOutput.toString().isEmpty()) {
+            System.out.println(standardOutput);
+            List<String> classpath = Arrays.asList(standardOutput.toString().split("\n"));
+            getKernelInstance().getMavenResolver().addJarsToClasspath(
+                classpath.stream()
+                     .filter(x -> x.startsWith("RuntimeClasspath: ")) 
+                     .map(x -> x.replace("RuntimeClasspath: ", ""))::iterator
+            );    
+        } else {
+            System.out.println("Error Output:\n" + errorOutput.toString());
+        }
+    }
+    
     @CellMagic(aliases = { "uml" })
     public void plantuml (List<String> args, String body) throws Exception {        
         SourceStringReader reader = new SourceStringReader(body);

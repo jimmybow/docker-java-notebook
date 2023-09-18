@@ -10,6 +10,7 @@ services:
     volumes:
       - ./data/work:/home/jovyan/work
       - ./data/jupyter:/home/jovyan/.jupyter
+      - ./data/gradle:/home/jovyan/.gradle
     environment:
       - TZ=Asia/Taipei
       - DOCKER_STACKS_JUPYTER_CMD=notebook

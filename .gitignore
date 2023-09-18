@@ -1,5 +1,7 @@
 data/work/*
 data/jupyter/*
+data/gradle/*
+!data/gradle/init.gradle
 !data/work/doc
 !data/jupyter/jupyter_notebook_config.py
 !data/jupyter/custom

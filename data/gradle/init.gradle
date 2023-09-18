@@ -1,0 +1,16 @@
+allprojects {
+    apply plugin: 'java-library'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    task RuntimeClasspath {
+        doLast {
+                sourceSets.main.runtimeClasspath.each { file ->
+                        println("RuntimeClasspath: ${file.absolutePath}")
+                }
+        }
+    }
+}
