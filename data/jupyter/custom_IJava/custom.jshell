@@ -49,11 +49,13 @@ class CustomMagics {
         ByteArrayOutputStream standardOutput = new ByteArrayOutputStream();
         ByteArrayOutputStream errorOutput = new ByteArrayOutputStream();	        
 
-        build.forTasks(gradleTasks)
-            .setStandardOutput(standardOutput)
-            .setStandardError(errorOutput)        
-            .setColorOutput(true)
-            .run();
+        try {
+            build.forTasks(gradleTasks)
+                    .setStandardOutput(standardOutput)
+                    .setStandardError(errorOutput)   
+                    .setColorOutput(true)
+                    .run();
+        } catch (Exception e) { ; }
 
         if (errorOutput.toString().isEmpty()) {
             System.out.println(standardOutput);
@@ -66,7 +68,7 @@ class CustomMagics {
                 );            
             }  
         } else {
-            System.out.println("Error Output:\n" + errorOutput.toString());
+            System.out.println(errorOutput);
         }
     }
     
