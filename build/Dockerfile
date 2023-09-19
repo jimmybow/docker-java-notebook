@@ -7,7 +7,7 @@ WORKDIR /opt
 
 # Install dependencies
 RUN apt-get update; \
-apt-get install curl wget zip unzip vim software-properties-common openjdk-11-jdk maven -y; \
+apt-get install curl wget zip unzip vim software-properties-common openjdk-17-jdk openjdk-11-jdk maven -y; \
 apt-get clean; \
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*;
 
@@ -17,6 +17,11 @@ RUN unzip ijava-kernel.zip -d ijava-kernel; \
   rm ijava-kernel.zip; \
   cd ijava-kernel; \
   python3 install.py --sys-prefix;
+  
+RUN ln -s /usr/lib/jvm/java-17-openjdk-amd64/bin/java /usr/local/bin/java17; \
+    cp -r /opt/conda/share/jupyter/kernels/java /opt/conda/share/jupyter/kernels/java17; \
+	sed -i 's/"java"/"java17"/g' /opt/conda/share/jupyter/kernels/java17/kernel.json; \
+	sed -i 's/"Java"/"Java17"/g' /opt/conda/share/jupyter/kernels/java17/kernel.json;
 
 ## install basic python packages
 RUN pip install --upgrade pip 
@@ -63,6 +68,10 @@ RUN pip install beakerx_kernel_sql; \
 # enable jupyter
 RUN jupyter nbextension enable hide_input/main --sys-prefix; \
     jupyter nbextension enable hinterland/hinterland --sys-prefix;
+
+# Default java 11
+RUN update-alternatives --install /usr/bin/java  java  /usr/lib/jvm/java-11-openjdk-amd64/bin/java  9999
+RUN update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac 9999
 
 # Set user back to priviledged user.
 RUN mkdir -p /home/$NB_USER/.ipython && chown -R $NB_USER /home/$NB_USER/.ipython
