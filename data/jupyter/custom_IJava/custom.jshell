@@ -23,17 +23,6 @@ import net.sourceforge.plantuml.FileFormat;
 import java.io.ByteArrayOutputStream;
 
 class CustomMagics {
-    @CellMagic
-    public void gradle(List<String> args, String body) throws Exception {
-        String gradle_task = args.isEmpty() ? "RuntimeClasspath" : args.get(0);
-        String randomDirectoryPath = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
-        String[] params= {randomDirectoryPath + File.separator + "build.gradle", gradle_task};
-        File buildFile = new File(params[0]);
-        buildFile.getParentFile().mkdirs();
-        Files.write(buildFile.toPath(), body.getBytes(Charset.forName("utf-8")));
-        gradle(Arrays.asList(params));
-    }
-
     @LineMagic
     public void gradle(List<String> args) throws Exception { 
         if (args.isEmpty()) {
@@ -82,6 +71,17 @@ class CustomMagics {
         }
     }
     
+    @CellMagic
+    public void gradle(List<String> args, String body) throws Exception {
+        String gradle_task = args.isEmpty() ? "RuntimeClasspath" : args.get(0);
+        String randomDirectoryPath = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
+        String[] params= {randomDirectoryPath + File.separator + "build.gradle", gradle_task};
+        File buildFile = new File(params[0]);
+        buildFile.getParentFile().mkdirs();
+        Files.write(buildFile.toPath(), body.getBytes(Charset.forName("utf-8")));
+        gradle(Arrays.asList(params));
+    }    
+    
     @CellMagic(aliases = { "uml" })
     public void plantuml (List<String> args, String body) throws Exception {        
         SourceStringReader reader = new SourceStringReader(body);
@@ -126,7 +126,7 @@ class CustomMagics {
     @LineMagic(aliases = { "system", "bash" })
     public void exec(List<String> args) throws Exception {  
         ProcessBuilder pb = new ProcessBuilder();
-        pb.command(args);
+        pb.command("bash", "-c", args.get(0));
         pb.redirectErrorStream(true);
         Process process = pb.start();
         Scanner scanner = new Scanner(process.getInputStream(), Charset.forName("UTF-8"));
@@ -134,5 +134,17 @@ class CustomMagics {
             System.out.println(scanner.nextLine());
         }
     }
+    
+    @CellMagic(aliases = { "system", "bash" })
+    public void exec(List<String> args, String body) throws Exception {    
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.command("bash", "-c", body);
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+        Scanner scanner = new Scanner(process.getInputStream(), Charset.forName("UTF-8"));
+        while (scanner.hasNext()) {
+            System.out.println(scanner.nextLine());
+        }
+    }    
 }
 getKernelInstance().getMagics().registerMagics(new CustomMagics());
