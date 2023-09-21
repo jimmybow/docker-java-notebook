@@ -43,19 +43,19 @@ class CustomMagics {
         try {
             build.forTasks(gradleTasks)
                     .setStandardOutput(standardOutput)
-                    .setStandardError(errorOutput)   
+                    .setStandardError(errorOutput) 
                     .setColorOutput(true)
                     .addProgressListener(new ProgressListener() {
                         @Override
                         public void statusChanged(ProgressEvent event) {
-                            updateDisplay(async_display, standardOutput.toString().replaceAll("(<.+?> [0-9]+% )", "\n$1"));
+                            updateDisplay(async_display, standardOutput.toString().replaceAll(".*(<.+?> [0-9]+% .*?)", "$1"));
                         }
                     })                    
                     .run();
-            connection.close();                    
         } catch (Exception e) { ; }
-
-        updateDisplay(async_display, standardOutput.toString().replaceAll("(<.+?> [0-9]+% )", "\n$1"));
+        
+        connection.close(); 
+        updateDisplay(async_display, standardOutput.toString().replaceAll(".*(<.+?> [0-9]+% .*?)", "$1"));
 
         if (errorOutput.toString().isEmpty()) {
             if (gradle_task.equals("RuntimeClasspath")) {
@@ -64,7 +64,7 @@ class CustomMagics {
                     classpath.stream()
                          .filter(x -> x.contains("RuntimeClasspath: ")) 
                          .map(x -> x.replaceAll(".*RuntimeClasspath: ", ""))::iterator
-                );            
+                );
             }
         } else {
             System.out.println(errorOutput);
