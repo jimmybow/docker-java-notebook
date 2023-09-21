@@ -13,6 +13,8 @@ import io.github.spencerpark.jupyter.kernel.magic.registry.CellMagic;
 import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
+import org.gradle.tooling.events.ProgressEvent;
+import org.gradle.tooling.events.ProgressListener;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import net.sourceforge.plantuml.SourceStringReader;
@@ -48,25 +50,33 @@ class CustomMagics {
         BuildLauncher build = connection.newBuild();
         ByteArrayOutputStream standardOutput = new ByteArrayOutputStream();
         ByteArrayOutputStream errorOutput = new ByteArrayOutputStream();	        
-
+        String async_display = display("");
         try {
             build.forTasks(gradleTasks)
                     .setStandardOutput(standardOutput)
                     .setStandardError(errorOutput)   
                     .setColorOutput(true)
+                    .addProgressListener(new ProgressListener() {
+                        @Override
+                        public void statusChanged(ProgressEvent event) {
+                            updateDisplay(async_display, standardOutput.toString().replaceAll("(<.+?> [0-9]+% )", "\n$1"));
+                        }
+                    })                    
                     .run();
+            connection.close();                    
         } catch (Exception e) { ; }
 
+        updateDisplay(async_display, standardOutput.toString().replaceAll("(<.+?> [0-9]+% )", "\n$1"));
+
         if (errorOutput.toString().isEmpty()) {
-            System.out.println(standardOutput);
             if (gradle_task.equals("RuntimeClasspath")) {
                 List<String> classpath = Arrays.asList(standardOutput.toString().split("\n"));
                 getKernelInstance().getMavenResolver().addJarsToClasspath(
                     classpath.stream()
-                         .filter(x -> x.startsWith("RuntimeClasspath: ")) 
-                         .map(x -> x.replace("RuntimeClasspath: ", ""))::iterator
+                         .filter(x -> x.contains("RuntimeClasspath: ")) 
+                         .map(x -> x.replaceAll(".*RuntimeClasspath: ", ""))::iterator
                 );            
-            }  
+            }
         } else {
             System.out.println(errorOutput);
         }
