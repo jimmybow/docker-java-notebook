@@ -59,7 +59,7 @@ class CustomMagics {
 
         if (errorOutput.toString().isEmpty()) {
             if (gradle_task.equals("RuntimeClasspath")) {
-                List<String> classpath = Arrays.asList(standardOutput.toString().split("\n"));
+                List<String> classpath = Arrays.asList(standardOutput.toString().split(System.lineSeparator()));
                 getKernelInstance().getMavenResolver().addJarsToClasspath(
                     classpath.stream()
                          .filter(x -> x.contains("RuntimeClasspath: ")) 
