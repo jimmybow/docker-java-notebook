@@ -63,7 +63,12 @@ class CustomMagics {
                 getKernelInstance().getMavenResolver().addJarsToClasspath(
                     classpath.stream()
                          .filter(x -> x.contains("RuntimeClasspath: ")) 
-                         .map(x -> x.replaceAll(".*RuntimeClasspath: ", ""))::iterator
+                         .map(x -> {
+                             String fix_path = x.replaceAll(".*RuntimeClasspath: ", "");
+                             int jar_index = fix_path.lastIndexOf(".jar");
+                             fix_path = jar_index >= 0 ? fix_path.substring(0, jar_index) + ".jar" : fix_path;
+                             return fix_path;
+                         })::iterator
                 );
             }
         } else {
