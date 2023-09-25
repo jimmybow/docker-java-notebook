@@ -31,6 +31,8 @@ class CustomMagics {
         
         File buildFile = new File(args.get(0));
         String gradle_task = args.size()>1 ? args.get(1) : "RuntimeClasspath";
+        String addArguments = args.size()>2 ? args.get(2) : "--no-parallel";    
+        String addJvmArguments = args.size()>3 ? args.get(3) : "-D1=1";
 
         ProjectConnection connection = GradleConnector.newConnector()
                 .forProjectDirectory(buildFile.getParentFile())
@@ -42,6 +44,8 @@ class CustomMagics {
         String async_display = display("");
         try {
             build.forTasks(gradleTasks)
+                    .addArguments(addArguments)                
+                    .addJvmArguments(addJvmArguments)
                     .setStandardOutput(standardOutput)
                     .setStandardError(errorOutput) 
                     .setColorOutput(true)
@@ -53,7 +57,7 @@ class CustomMagics {
                     })                    
                     .run();
         } catch (Exception e) { ; }
-        
+
         connection.close(); 
         updateDisplay(async_display, standardOutput.toString().replaceAll(".*(<.+?> [0-9]+% .*?)", "$1"));
 
@@ -78,9 +82,11 @@ class CustomMagics {
     
     @CellMagic
     public void gradle(List<String> args, String body) throws Exception {
-        String gradle_task = args.isEmpty() ? "RuntimeClasspath" : args.get(0);
+        String gradle_task = args.size()>0 ? args.get(0) : "RuntimeClasspath";
+        String addArguments = args.size()>1 ? args.get(1) : "--no-parallel";    
+        String addJvmArguments = args.size()>2 ? args.get(2) : "-D1=1";    
         String randomDirectoryPath = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
-        String[] params= {randomDirectoryPath + File.separator + "build.gradle", gradle_task};
+        String[] params= {randomDirectoryPath + File.separator + "build.gradle", gradle_task, addArguments, addJvmArguments};
         File buildFile = new File(params[0]);
         buildFile.getParentFile().mkdirs();
         Files.write(buildFile.toPath(), body.getBytes(Charset.forName("utf-8")));
