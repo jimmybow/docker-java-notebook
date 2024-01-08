@@ -1,12 +1,7 @@
-String[] mavenRepo = {
-    "repo.gradle.org", "https://repo.gradle.org/gradle/libs-releases"
-};
-String[] mavenDependencies = {
-    "org.gradle:gradle-tooling-api:7.4.2",
-    "net.sourceforge.plantuml:plantuml:8059"
-};
-getKernelInstance().getMavenResolver().addMavenRepo(Arrays.asList(mavenRepo));
-getKernelInstance().getMavenResolver().addMavenDependencies(Arrays.asList(mavenDependencies));
+List<File> lib_jars = Arrays.asList(new File("/home/jovyan/.gradle/lib").listFiles());
+getKernelInstance().getMavenResolver().addJarsToClasspath(
+    lib_jars.stream().map(x -> x.getAbsolutePath())::iterator
+);
 
 import io.github.spencerpark.jupyter.kernel.magic.registry.LineMagic;
 import io.github.spencerpark.jupyter.kernel.magic.registry.CellMagic;
