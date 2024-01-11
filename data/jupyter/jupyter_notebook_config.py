@@ -889,13 +889,13 @@ c.NotebookApp.quit_button = False
 ## Whether to consider culling kernels which have one or more connections.
 #          Only effective if cull_idle_timeout > 0.
 #  Default: False
-# c.MappingKernelManager.cull_connected = False
+c.MappingKernelManager.cull_connected = True
 
 ## Timeout (in seconds) after which a kernel is considered idle and ready to be culled.
 #          Values of 0 or lower disable culling. Very short timeouts may result in kernels being culled
 #          for users with poor network connections.
 #  Default: 0
-# c.MappingKernelManager.cull_idle_timeout = 0
+c.MappingKernelManager.cull_idle_timeout = 3 * 60 * 60
 
 ## The interval (in seconds) on which to check for idle kernels exceeding the
 #  cull timeout value.
