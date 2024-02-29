@@ -7,7 +7,7 @@ WORKDIR /opt
 
 # Install dependencies
 RUN apt-get update; \
-apt-get install curl wget zip unzip vim software-properties-common openjdk-17-jdk openjdk-11-jdk maven -y; \
+apt-get install curl wget zip unzip vim libaio1 software-properties-common openjdk-17-jdk openjdk-11-jdk maven -y; \
 apt-get clean; \
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*;
 
