@@ -4,11 +4,11 @@ services:
     build: ./build
     image: java-notebook:java11
     container_name: java-notebook
-    extra_hosts:
-      - "host.docker.internal:$host_docker_internal"
+    #extra_hosts:
+    #  - "host.docker.internal:$host_docker_internal"
     user: root
-    ports:
-      - 8888:8888
+    #ports:
+    #  - 8888:8888
     volumes:
       - ./data/work:/home/jovyan/work
       - ./data/jupyter:/home/jovyan/.jupyter
@@ -18,7 +18,7 @@ services:
       - DOCKER_STACKS_JUPYTER_CMD=notebook
       - IJAVA_STARTUP_SCRIPTS_PATH=/home/jovyan/.jupyter/custom_IJava/custom.jshell
     restart: unless-stopped
-    #network_mode: host
-networks:
-  default:
-    name: bridge-network
+    network_mode: host
+#networks:
+#  default:
+#    name: bridge-network
