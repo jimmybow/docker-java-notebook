@@ -139,7 +139,7 @@ class CustomMagics {
         while (scanner.hasNext()) {
             System.out.println(scanner.nextLine());
         }
-        scanner.close() // 關閉 Scanner
+        scanner.close(); // 關閉 Scanner
     }
     
     @CellMagic(aliases = { "system", "bash" })
@@ -152,7 +152,7 @@ class CustomMagics {
         while (scanner.hasNext()) {
             System.out.println(scanner.nextLine());
         }
-        scanner.close() // 關閉 Scanner
+        scanner.close(); // 關閉 Scanner
     }    
 }
 getKernelInstance().getMagics().registerMagics(new CustomMagics());
